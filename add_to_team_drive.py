@@ -1,4 +1,3 @@
-from google.oauth2.service_account import Credentials
 import googleapiclient.discovery, json, progress.bar, glob, sys, argparse, time
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -73,4 +72,4 @@ batch.execute()
 print('Complete.')
 hours, rem = divmod((time.time() - stt), 3600)
 minutes, sec = divmod(rem, 60)
-print("Elapsed Time:\n{:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(minutes), sec))
+print(f"Elapsed Time:\n{int(hours):0>2}:{int(minutes):0>2}:{sec:05.2f}")

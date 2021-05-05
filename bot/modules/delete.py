@@ -1,6 +1,5 @@
 from telegram.ext import CommandHandler
 import threading
-from telegram import Update
 from bot import dispatcher, LOGGER
 from bot.helper.telegram_helper.message_utils import auto_delete_message, sendMessage
 from bot.helper.telegram_helper.filters import CustomFilters
@@ -16,7 +15,7 @@ def deletefile(update, context):
 	except IndexError:
 		msg = 'send a link along with command'
 
-	if msg == '' : 
+	if msg == '' :
 		drive = gdriveTools.GoogleDriveHelper()
 		msg = drive.deletefile(link)
 	LOGGER.info(f"this is msg : {msg}")

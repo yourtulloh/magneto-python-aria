@@ -37,6 +37,8 @@ def direct_link_generator(link: str):
         return osdn(link)
     elif 'github.com' in link:
         return github(link)
+    elif "racaty.net" in link:
+        return racaty(link)
     else:
         raise DirectDownloadLinkException(f'No Direct link function found for {link}')
 
@@ -85,12 +87,11 @@ def yandex_disk(url: str) -> str:
 def cm_ru(url: str) -> str:
     """ cloud.mail.ru direct links generator
     Using https://github.com/JrMasterModelBuilder/cmrudl.py"""
-    reply = ''
     try:
         link = re.findall(r'\bhttps?://.*cloud\.mail\.ru\S+', url)[0]
     except IndexError:
         raise DirectDownloadLinkException("`No cloud.mail.ru links found`\n")
-    command = f'vendor/cmrudl.py/cmrudl -s {link}'
+    command = f'vendor/cmrudl/cmrudl -s {link}'
     result = popen(command).read()
     result = result.splitlines()[-1]
     try:
@@ -144,6 +145,21 @@ def github(url: str) -> str:
         return dl_url
     except KeyError:
         raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
+
+
+def racaty(url: str) -> str:
+    try:
+        link = re.findall(r"\bhttps?://.*racaty\.net\S+", url)[0]
+    except IndexError:
+        raise DirectDownloadLinkException("`No Racaty links found`\n")
+    reqs = requests.get(link)
+    bss = BeautifulSoup(reqs.text, "html.parser")
+    op = bss.find("input", {"name": "op"})["value"]
+    id = bss.find("input", {"name": "id"})["value"]
+    rep = requests.post(link, data={"op": op, "id": id})
+    bss2 = BeautifulSoup(rep.text, "html.parser")
+    dl_url = bss2.find("a", {"id": "uniqueExpirylink"})["href"]
+    return dl_url
 
 
 def useragent():
